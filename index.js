@@ -1,11 +1,14 @@
 import express from "express";
 import path from "path";
+import morgan from "morgan";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = 3000;
 
+app.use(morgan("dev"));
+app.use(express.static(path.join(__dirname, "images")));
 app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -20,6 +23,11 @@ app.get("/about", (req, res) => {
 
 app.get("/user/:name", (req, res) => {
   res.render("user", { title: "User", name: req.params.name });
+});
+
+app.get("/download", (req, res) => {
+  const file = path.join(__dirname, "images", "midnight-zone.jpg");
+  res.download(file);
 });
 
 app.post("/submit", (req, res) => {
